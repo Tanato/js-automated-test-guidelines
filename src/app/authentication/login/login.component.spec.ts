@@ -1,15 +1,15 @@
 import { async, ComponentFixture, TestBed, fakeAsync, tick, inject } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { Location } from '@angular/common';
 
 import { LoginComponent } from './login.component';
 import { AuthenticationService } from '../authentication.service';
 import { defer, Observable, BehaviorSubject } from 'rxjs';
 import { User } from 'src/app/authentication/user';
-import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
-import { userInfo } from 'os';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { By } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 
 class MockAuthService {
   public user = new BehaviorSubject<User>(<User>{});
@@ -21,7 +21,6 @@ class MockAuthService {
 
 describe('LoginComponent Unit Tests', () => {
   let component: LoginComponent;
-  let fixture: ComponentFixture<LoginComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -33,9 +32,8 @@ describe('LoginComponent Unit Tests', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LoginComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    // For Unit Test, create component as a simple class without use of TestBed
+    component = new LoginComponent(new FormBuilder(), new MockAuthService(), TestBed.get(Router));
   });
 
   describe('on form creation', () => {
@@ -64,6 +62,14 @@ describe('LoginComponent Unit Tests', () => {
   });
 
   describe('on DOM creation', () => {
+    let fixture: ComponentFixture<LoginComponent>;
+
+    beforeEach(() => {
+      // Create component with TestBed only for DOM tests
+      fixture = TestBed.createComponent(LoginComponent);
+      fixture.detectChanges();
+    });
+
     it('should have a submit button', () => {
       const submitButtonElement = fixture.debugElement.query(By.css('#buttonSubmit'));
       expect(submitButtonElement).toBeTruthy();
@@ -102,7 +108,7 @@ describe('LoginComponent Unit Tests', () => {
     });
 
     it('should have form valid with username and password', () => {
-       // Do prefer use setValue instead of patchValue, as it can catch extra components errors
+      // Do prefer use setValue instead of patchValue, as it can catch extra components errors
       component.loginForm.setValue({ username: 'test', password: 'test' });
       expect(component.loginForm.valid).toBeTruthy();
     });

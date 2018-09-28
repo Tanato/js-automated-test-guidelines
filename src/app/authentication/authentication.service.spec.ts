@@ -1,16 +1,12 @@
-import { TestBed } from '@angular/core/testing';
-
 import { AuthenticationService } from './authentication.service';
 import { BehaviorSubject } from 'rxjs';
-import { User } from 'src/app/authentication/user';
 
 describe('AuthenticationService Unit Tests', () => {
   let service: AuthenticationService;
 
   beforeEach(() =>  {
-    TestBed.configureTestingModule({});
-
-    service = TestBed.get(AuthenticationService);
+    // Before each test, create new instance of Service class without TestBed
+    service = new AuthenticationService();
   });
 
   describe('initial state', () => {

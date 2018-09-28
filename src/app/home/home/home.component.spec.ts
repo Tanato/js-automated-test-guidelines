@@ -1,8 +1,16 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { HomeComponent } from './home.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { AuthenticationService } from '../../authentication/authentication.service';
+import { BehaviorSubject } from 'rxjs';
+import { User } from 'src/app/authentication/user';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+
+class MockAuthService {
+  public user = new BehaviorSubject<User>(<User>{ username: 'myusername', name: 'myname' });
+}
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
@@ -11,7 +19,9 @@ describe('HomeComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule],
-      declarations: [HomeComponent]
+      providers: [{ provide: AuthenticationService, useClass: MockAuthService }],
+      declarations: [HomeComponent],
+      schemas: [NO_ERRORS_SCHEMA]
     })
       .compileComponents();
   }));
@@ -22,7 +32,29 @@ describe('HomeComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  describe('on creating component', () => {
+    it('should create', () => {
+      expect(component).toBeTruthy();
+    });
+
+    it('should have function loadData', () => {
+      expect(component.loadData).toBeDefined();
+    });
+
+    it('should call loadData on Init Lifecycle', fakeAsync(() => {
+      spyOn(component, 'loadData');
+      component.ngOnInit();
+      fixture.detectChanges();
+      expect(component.loadData).toHaveBeenCalled();
+    }));
+  });
+
+  describe('loadData function', () => {
+    it('should call loadData on Init Lifecycle', fakeAsync(() => {
+      spyOn(component, 'loadData');
+      component.ngOnInit();
+      fixture.detectChanges();
+      expect(component.loadData).toHaveBeenCalled();
+    }));
   });
 });

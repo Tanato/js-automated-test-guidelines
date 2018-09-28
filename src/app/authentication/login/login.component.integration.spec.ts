@@ -1,12 +1,13 @@
 import { async, ComponentFixture, TestBed, fakeAsync, tick, inject } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import { DebugElement } from '@angular/core';
+import { Location } from '@angular/common';
+import { Router } from '@angular/router';
 
 import { LoginComponent } from './login.component';
 import { AuthenticationService } from '../authentication.service';
-import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
-import { componentNeedsResolution } from '@angular/core/src/metadata/resource_loading';
 
 describe('LoginComponent Integration Tests', () => {
   let component: LoginComponent;
@@ -77,20 +78,30 @@ describe('LoginComponent Integration Tests', () => {
     }));
   });
 
-  describe('when submit', () => {
-    it('should submit the user input to login when click submit button', fakeAsync(inject([AuthenticationService], (authService) => {
+  describe('when click on submit', () => {
+    it('should login with the user input and navigate to home', fakeAsync(inject([AuthenticationService, Router], (authService, router) => {
       component.loginForm.setValue({ username: 'myusername', password: 'mypassword' });
       fixture.detectChanges();
       // Do watch for methods that are being tested without mocking them
       spyOn(component, 'onSubmit').and.callThrough();
       spyOn(authService, 'login').and.callThrough();
+      spyOn(router, 'navigate').and.callThrough();
 
       submitButtonElement.nativeElement.click();
 
       fixture.whenStable().then(() => {
         expect(component.onSubmit).toHaveBeenCalled();
         expect(authService.login).toHaveBeenCalledWith('myusername', 'mypassword');
+        expect(router.navigate).toHaveBeenCalledWith(['/home']);
       });
+    })));
+  });
+
+  describe('when cancel', () => {
+    it('should submit the user input to login when click submit button', fakeAsync(inject([Location], (location) => {
+      cancelButtonElement.nativeElement.click();
+      tick();
+      expect(location.path()).toBe('/home');
     })));
   });
 });
