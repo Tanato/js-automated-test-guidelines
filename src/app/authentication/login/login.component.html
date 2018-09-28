@@ -1,10 +1,12 @@
 <h2>Login</h2>
 <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
   <div class="form-group">
-    <input type="text" formControlName="username" placeholder="Username" required />
+    <input id="inputUsername" type="text" formControlName="username" placeholder="Username" required />
   </div>
   <div class="form-group">
-    <input type="password" formControlName="password" placeholder="Password" required />
+    <input id="inputPassword" type="password" formControlName="password" placeholder="Password" required />
   </div>
-  <button type="submit">Login</button>
+  <div id="divLoading" [hidden]="!loading"></div>
+  <button id="buttonCancel" type="button" routerLink="/home">Cancelar</button>
+  <button id="buttonSubmit" type="submit" [disabled]="!loginForm.valid">Login</button>
 </form>

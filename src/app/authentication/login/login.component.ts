@@ -19,20 +19,20 @@ export class LoginComponent implements OnInit {
     private authService: AuthenticationService,
     private router: Router) { }
 
-  ngOnInit() {
-    this.createForm();
-  }
-
-  createForm() {
-  }
+  ngOnInit() { }
 
   onSubmit() {
     this.loading = true;
-    this.authService.login(this.loginForm.controls['username'].value,
+    this.authService.login(
+      this.loginForm.controls['username'].value,
       this.loginForm.controls['password'].value)
       .subscribe(result => {
         this.loading = false;
-        this.router.navigate(['/home']);
+        if (result) {
+          this.router.navigate(['/home']);
+        } else {
+          console.log('wrong username and/or password!');
+        }
       });
   }
 }

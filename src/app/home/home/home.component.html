@@ -1,3 +1,6 @@
-<h1>
-  Hello: {{user.username}}
+<h1 *ngIf="user?.username; else anonymous">
+  Hello: {{user.username}}!
 </h1>
+<ng-template #anonymous>
+  Viewing as anonymous!
+</ng-template>
