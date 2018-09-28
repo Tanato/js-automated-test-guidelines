@@ -11,7 +11,7 @@ export class AuthenticationService {
   constructor() { }
 
   login(username: string, password: string): Observable<boolean> {
-    if (username && password && false) {
+    if (username && password) {
       this.user.next({ username: username, name: username });
       return of(true);
     }

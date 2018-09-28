@@ -9,6 +9,7 @@ import { defer, Observable, BehaviorSubject } from 'rxjs';
 import { User } from 'src/app/authentication/user';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
 import { userInfo } from 'os';
+import { By } from '@angular/platform-browser';
 
 class MockAuthService {
   public user = new BehaviorSubject<User>(<User>{});
@@ -18,7 +19,7 @@ class MockAuthService {
   }
 }
 
-describe('LoginComponent', () => {
+describe('LoginComponent Unit Tests', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
 
@@ -43,9 +44,9 @@ describe('LoginComponent', () => {
     });
 
     it('should have a loginForm with username and password controls', () => {
-      expect(component.loginForm).toBeDefined();
-      expect(component.loginForm.controls['username']).toBeDefined();
-      expect(component.loginForm.controls['password']).toBeDefined();
+      expect(component.loginForm).toBeTruthy();
+      expect(component.loginForm.controls['username']).toBeTruthy();
+      expect(component.loginForm.controls['password']).toBeTruthy();
     });
 
     it('should start with username and password controls with string empty', () => {
@@ -59,6 +60,33 @@ describe('LoginComponent', () => {
 
     it('should have loading property false', () => {
       expect(component.loading).toBeFalsy();
+    });
+  });
+
+  describe('on DOM creation', () => {
+    it('should have a submit button', () => {
+      const submitButtonElement = fixture.debugElement.query(By.css('#buttonSubmit'));
+      expect(submitButtonElement).toBeTruthy();
+    });
+
+    it('should have a cancel button', () => {
+      const cancelButtonElement = fixture.debugElement.query(By.css('#buttonCancel'));
+      expect(cancelButtonElement).toBeTruthy();
+    });
+
+    it('should have a username input', () => {
+      const usernameInputElement = fixture.debugElement.query(By.css('#inputUsername'));
+      expect(usernameInputElement).toBeTruthy();
+    });
+
+    it('should have a password input', () => {
+      const passwordInputElement = fixture.debugElement.query(By.css('#inputPassword'));
+      expect(passwordInputElement).toBeTruthy();
+    });
+
+    it('should have a login div', () => {
+      const loadingDivElement = fixture.debugElement.query(By.css('#divLoading'));
+      expect(loadingDivElement).toBeTruthy();
     });
   });
 
