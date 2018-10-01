@@ -9,7 +9,6 @@ import { defer, Observable, BehaviorSubject } from 'rxjs';
 import { User } from 'src/app/authentication/user';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { By } from '@angular/platform-browser';
-import { Router } from '@angular/router';
 
 class MockAuthService {
   public user = new BehaviorSubject<User>(<User>{});
@@ -21,19 +20,26 @@ class MockAuthService {
 
 describe('LoginComponent Unit Tests', () => {
   let component: LoginComponent;
+  let fixture: ComponentFixture<LoginComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([{ path: 'home', children: [] }])], // Only imports Lib Modules
-      providers: [{ provide: AuthenticationService, useClass: MockAuthService }], // Aways use mock for services
+      imports: [
+        ReactiveFormsModule,
+        RouterTestingModule.withRoutes([{ path: 'home', children: [] }])
+      ], // Only imports Lib Modules
+      providers: [
+        { provide: AuthenticationService, useClass: MockAuthService }
+      ], // Aways use mock for services
       declarations: [LoginComponent], // Declare just the component that's been tested
       schemas: [NO_ERRORS_SCHEMA] // Hide template errors on Unit tests only
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    // For Unit Test, create component as a simple class without use of TestBed
-    component = new LoginComponent(new FormBuilder(), new MockAuthService(), TestBed.get(Router));
+    fixture = TestBed.createComponent(LoginComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   describe('on form creation', () => {
@@ -62,36 +68,38 @@ describe('LoginComponent Unit Tests', () => {
   });
 
   describe('on DOM creation', () => {
-    let fixture: ComponentFixture<LoginComponent>;
-
-    beforeEach(() => {
-      // Create component with TestBed only for DOM tests
-      fixture = TestBed.createComponent(LoginComponent);
-      fixture.detectChanges();
-    });
-
     it('should have a submit button', () => {
-      const submitButtonElement = fixture.debugElement.query(By.css('#buttonSubmit'));
+      const submitButtonElement = fixture.debugElement.query(
+        By.css('#buttonSubmit')
+      );
       expect(submitButtonElement).toBeTruthy();
     });
 
     it('should have a cancel button', () => {
-      const cancelButtonElement = fixture.debugElement.query(By.css('#buttonCancel'));
+      const cancelButtonElement = fixture.debugElement.query(
+        By.css('#buttonCancel')
+      );
       expect(cancelButtonElement).toBeTruthy();
     });
 
     it('should have a username input', () => {
-      const usernameInputElement = fixture.debugElement.query(By.css('#inputUsername'));
+      const usernameInputElement = fixture.debugElement.query(
+        By.css('#inputUsername')
+      );
       expect(usernameInputElement).toBeTruthy();
     });
 
     it('should have a password input', () => {
-      const passwordInputElement = fixture.debugElement.query(By.css('#inputPassword'));
+      const passwordInputElement = fixture.debugElement.query(
+        By.css('#inputPassword')
+      );
       expect(passwordInputElement).toBeTruthy();
     });
 
     it('should have a login div', () => {
-      const loadingDivElement = fixture.debugElement.query(By.css('#divLoading'));
+      const loadingDivElement = fixture.debugElement.query(
+        By.css('#divLoading')
+      );
       expect(loadingDivElement).toBeTruthy();
     });
   });
@@ -126,18 +134,22 @@ describe('LoginComponent Unit Tests', () => {
       expect(component.loading).toBeFalsy();
     }));
 
-    it('should navigate to /home if success', fakeAsync(inject([Location], (location) => {
-      component.loginForm.setValue({ username: 'test', password: 'test' });
-      component.onSubmit();
-      tick();
-      expect(location.path()).toBe('/home');
-    })));
+    it('should navigate to /home if success', fakeAsync(
+      inject([Location], location => {
+        component.loginForm.setValue({ username: 'test', password: 'test' });
+        component.onSubmit();
+        tick();
+        expect(location.path()).toBe('/home');
+      })
+    ));
 
-    it('should stay in Login Component if error', fakeAsync(inject([Location], (location) => {
-      component.loginForm.setValue({ username: 'test', password: '' });
-      component.onSubmit();
-      tick();
-      expect(location.path()).toBe('');
-    })));
+    it('should stay in Login Component if error', fakeAsync(
+      inject([Location], location => {
+        component.loginForm.setValue({ username: 'test', password: '' });
+        component.onSubmit();
+        tick();
+        expect(location.path()).toBe('');
+      })
+    ));
   });
 });
