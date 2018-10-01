@@ -7,8 +7,7 @@ This testing style guide presents preferred conventions and, as importantly, exp
 
 ## Test Pyramid decision diagram
 
-![Alt text](./assets/test_pyramid_decision.svg)
-<img src="./assets/test_pyramid_decision.svg">
+![Alt text](./assets/test_pyramid_decision.png)
 
 ## Style vocabulary
 
