@@ -7,7 +7,7 @@ This testing style guide presents preferred conventions and, as importantly, exp
 
 ## Test Pyramid decision diagram
 
-![Alt text](./assets/test_pyramid_decision.png)
+[![Alt text](./assets/test_pyramid_decision.png)](https://raw.githubusercontent.com/Tanato/cit-ng-testing/master/assets/test_pyramid_decision.png)
 
 ## Style vocabulary
 
@@ -31,6 +31,7 @@ If you fully understand the meaning behind the guideline and have a good reason 
 
 ## Generic
 
+### Test Scope
 
 **Do** write minimally passing tests
 
