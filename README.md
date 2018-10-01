@@ -29,7 +29,7 @@ If you fully understand the meaning behind the guideline and have a good reason 
 
 <a href="#toc">Back to top</a>
 
-## Generic
+## Generic Tests Guidelines
 
 ### Test Scope
 
@@ -48,7 +48,7 @@ Tests that include more information than required to pass the test have a higher
 
 ### Organizing Tests
 
-**Do** break your tests in multiple sub-describes, grouping them by subject
+**Do** break your tests in multiple sub-describes, grouping them by subject, like functions or properties
 
 **Why?** Grouping them makes it easier to idenfify what's been tested
 
@@ -157,7 +157,7 @@ Setting up your environment, allows you to write more precise tests.
 
 Unit tests are responsible to test units of code in isolation. Units of code can be understood as functions, properties and variables.
 
-Unit tests are tests that should cover the code that you've written. It is responsible to assure that unwanted chances in your code exposes possible failures. 
+Unit tests are tests that should cover the code that you've written. It is responsible to ensure that unwanted chances in your code exposes possible failures. 
 
 Unit tests should not be dependent on external code. Unit tests should be responsible for assuring that some lines of code are been executed properly. If your code depends on a external function or variable, those has to be mocked or stubbed and their code have to be tested by their own unit tests.
 
@@ -174,10 +174,13 @@ Unit tests should not be dependent on external code. Unit tests should be respon
 
 ### Fake Dependencies
 
-**Do** mock or stub all dependencies. With exception of frameworks dependencies or public libraries.
+**Do** mock or stub all dependencies. 
 
-**Why?** 
+**Why?** Unit test should be resilient to changes on external code.
 
+**Why?** External changes that can break you code should be testes with Integration tests.
+
+Exception apply for frameworks dependencies that don't provide Stubs or public packages.
 
 ### Private Members
 
@@ -214,17 +217,19 @@ Unit tests should not be dependent on external code. Unit tests should be respon
 
 ## Integration Tests
 
-Integration tests have the purpose of validating how units of code work together. All possible scenarios that tests that unit should have been done previously on Unit Tests, and after you assure that your units are tested you can see if they are integrating fine.
+Integration tests have the purpose of validating how units of code work together. The behaviour of a piece of code by itself, in other hand, is responsibility of Unit Tests. 
 
-Even though you can use the same tools for Unit tests and Integration tests, you should not use it to test small pieces of code. This separation is important so your tests still small even when there's a lot of integrations happening on a component.
+You should create Integration tests only after your coverage is done with Unit Tests, that way you guarantee that that piece of code is working properly by itself before trying to integrate with another pieces of code.
+
+Even though you can use the same tools for Unit tests and Integration tests, you should separate those tests by it's purposes, this separation will allow you to create smaller tests that runs faster, are easyer to maintain and serve a single purpose.
 
 ### Integration Test Responsibilities
 
-**Do** assure that all possible scenarios are already covered on Unit Tests before you start to write Integration Tests for a code.
+**Do** ensure that all possible scenarios are already covered on Unit Tests before you start to write Integration Tests for a code.
 
 **Why?** Integration tests are slower then Unit Tests to run.
 
-**Why?** Integration tests are responsible to assure that multiple parts of your code are working fine together. 
+**Why?** Integration tests are responsible to ensure that multiple parts of your code are working fine together. 
 
 ### Integration Assertions 
 
@@ -262,5 +267,51 @@ Testing all the integrations on a single test makes it hard to spot what's wrong
 
 **Why?** Helps to identify if the proportion of Integration tests are consistent with Unit tests on the testing pyramid.
 
-
 <a href="#toc">Back to top</a>
+
+
+## What to test?
+
+Below I have listed some examples of what you should test in Unit Tests scenarions  and Integration Tests.
+
+
+Some of those examples could be fitted on one or another category, but is important to decide on where's the best place to put them and have a motive to do so. There's a flow chart on this page that may help you to decide, but as the pyramid of tests suggest, try always to cover the majority of your code using Unit Tests.
+
+
+Remember also that this is only a small set of common cases and there's plenty of scenarios that aren't listed below that should be tested as well.
+
+## Unit Test
+
+### Every public member functionality
+
+Every piece of code inside a function has to be tested alongside with it's effects on other members of the class.
+
+### Private function through the public ones
+
+Every private function inside your class has to be covered on tests of public members that uses that function.
+
+### Initial state of the object
+
+After a Service, Component or another class is created, you should assure that the initial state of it's public members are properly setted with expected values.
+
+### All elements that should exists on the Template
+
+It's important to ensure that all elements are being created on the template with it's correct identification. Another important thing to test is if the elements CSS classes that are related to business rules are being correctly applied.
+
+## Integration Tests
+
+### Calls from Components or Services to Angular Services
+
+After Unit Tests are done with stubbed and mocked services, you should cover if the real implementation of the service is been called with correct parameters and if that call is receiving the proper return
+
+### Data Binding (Component x Template)
+
+In Integration Tests, you should ensure that the DOM element is binded correctly with the component's public properties that it is related. 
+
+### DOM Events (e.g. clicks, lost focus)
+
+In Integration Tests, all public functions of a component should already be covered by Unit Tests, so in Integration tests is important to test if a given event is calling his related function.
+
+### Use of Directives and Sub-Components on Templates
+
+When using a Directive or Sub-Component in a Template from inside your application, you should ensure that those Components are receiving the correct @Input parameters and ensure if its @Outputs events are triggering correct functions in your container Component 
