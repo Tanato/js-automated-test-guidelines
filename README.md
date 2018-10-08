@@ -169,7 +169,7 @@ Unit tests should not be dependent on external code. Unit tests should be respon
 
 **Why?** Errors on external dependencies should not break your unit tests.
 
-**Why?** Tests that cross boundaries should be tested as Integration Tests.
+**Why?** Tests that cross boundaries should be tested as Component Tests.
 
 
 ### Fake Dependencies
@@ -178,7 +178,7 @@ Unit tests should not be dependent on external code. Unit tests should be respon
 
 **Why?** Unit test should be resilient to changes on external code.
 
-**Why?** External changes that can break you code should be testes with Integration tests.
+**Why?** External changes that can break you code should be testes with Component tests.
 
 Exception apply for frameworks dependencies that don't provide Stubs or public packages.
 
@@ -204,7 +204,7 @@ Exception apply for frameworks dependencies that don't provide Stubs or public p
 
 ### Template Testing
 
-**Do** only unit test HTML code that don't are affected by Typescript code. Use integration tests to test the behaviour of the DOM with component code.
+**Do** only unit test HTML code that don't are affected by Typescript code. Use Component Tests to test the behaviour of the DOM with component code.
 
 **Why?** Helps to avoid a lot of assertion on DOM elements
 
@@ -215,25 +215,25 @@ Exception apply for frameworks dependencies that don't provide Stubs or public p
 
 <a href="#toc">Back to top</a>
 
-## Integration Tests
+## Component Tests
 
-Integration tests have the purpose of validating how units of code work together. The behaviour of a piece of code by itself, in other hand, is responsibility of Unit Tests. 
+Component tests have the purpose of validating how units of code work together, testing the Components with the real implementation of his dependencies. Boundaries that cross the application limits, like for example Backend APIs, should be mocked as the intent is to validate only the aplication itself. 
 
-You should create Integration tests only after your coverage is done with Unit Tests, that way you guarantee that that piece of code is working properly by itself before trying to integrate with another pieces of code.
+You should create Component tests only after your coverage is done with Unit Tests, that way you guarantee that that piece of code is working properly by itself before trying to integrate with another pieces of code.
 
-Even though you can use the same tools for Unit tests and Integration tests, you should separate those tests by it's purposes, this separation will allow you to create smaller tests that runs faster, are easyer to maintain and serve a single purpose.
+Even though you can use the same tools for Unit tests and Component tests, you should separate those tests by it's purposes, this separation will allow you to create smaller tests that runs faster, are easyer to maintain and serve a single purpose.
 
-### Integration Test Responsibilities
+### Component Test Responsibilities
 
-**Do** ensure that all possible scenarios are already covered on Unit Tests before you start to write Integration Tests for a code.
+**Do** ensure that all possible scenarios are already covered on Unit Tests before you start to write Component Tests for a code.
 
-**Why?** Integration tests are slower then Unit Tests to run.
+**Why?** Component tests are slower then Unit Tests to run.
 
-**Why?** Integration tests are responsible to ensure that multiple parts of your code are working fine together. 
+**Why?** Component tests are responsible to ensure that multiple parts of your code are working fine together. 
 
-### Integration Assertions 
+### Component Assertions 
 
-**Consider** limit the assertions to dependency calls and the end result of the integration.
+**Consider** limit the assertions to dependency calls and the expected end state of the component.
 
 **Why?** If your units are properly created, you shouldn't have to assert those parts of code again.
 
@@ -245,7 +245,7 @@ Asserting integrations calls with spies
 
 **Avoid** loading the main module and modules not related to your tests.
 
-**Why?** Each integration test should be focused on test as little integration as possible.
+**Why?** Each Component Test should be focused on test only its dependencies. 
 
 **Why?** Bringing unnecessary module configuration to your tests makes it slower to run.
 
@@ -253,26 +253,67 @@ Asserting integrations calls with spies
 
 Testing all the integrations on a single test makes it hard to spot what's wrong when it breakes, so consider creating multiple tests for multiple integrations, and if necessary, create a tests with multiple integrations only after have tested priorly those single integrations.
 
-### Integration Test Organization
+### Component Test Organization
 
-**Do** name your root describe for Integration tests with ```"[featureName] Integration Tests"```
+**Do** name your root describe for Component tests with ```"[featureName] Component Tests"```
 
-**Consider** create a separate file for Integration tests, like ```my-feature.integration.spec.ts```. Be consistent throughout you codebase.
+**Do** create a separated root describe for your Component Tests
 
-**Why?** Makes easier to know that those tests are about integration and differentiate them from Unit Tests.
+**Why?** Makes easier to separate objectives and differentiate them from Unit Tests.
 
 **Why?** Makes easier to spot Unit tests written on a wrong location.
 
 **Why?** Makes easier to spot unallowed dependencies, thus helping code review
 
-**Why?** Helps to identify if the proportion of Integration tests are consistent with Unit tests on the testing pyramid.
+**Why?** Helps to identify if the proportion of Component tests are consistent with Unit tests on the testing pyramid.
 
 <a href="#toc">Back to top</a>
+
+## Integration Tests
+
+Integration tests are responsible for testing the application as a whole without the dependency of external services and APIs. The focus of the Integration tests is to load the application and ensure that the application that the user will see behaves like expected. 
+
+It differs from E2E tests as it usually mocks all the external dependencies, this approach allows Integration Tests to run faster compared to E2E tests, without the complexity of running the entire backend and at the same time having a more controlled environment.
+
+Tntegration Tests will be written using Protractor and mocking the API dependencies through a express server inside the tests.
+
+### Integration Test Responsibilities
+
+**Do** ensure that the smaller components used by your interface are already covered by Unit and Component tests.
+
+**Do** Test routable components and parts of the application that the end user interacts with.
+
+**Why?** Integration tests are slower then Unit and Component Tests to run.
+
+**Why?** Integration Tests are responsible to validate the application as a whole, not caring about how the internals of the application are coded. 
+
+### Component Test Organization
+
+**Do** use the termination ```[my-feature].integration-spec.ts``` for your Integration Tests
+
+**Do** create your Integration Tests in a separate folder at the root of your application, named ```./integration/```
+
+**Do** respect the folder structure of your application to write your tests, supressing the ```app``` folder.
+
+**Why?** Allows easier navigation through Integration Tests.
+
+**Why?** Allows the tool to identify what tests to run in Integration Test phase.
+
+**Why?** Follow the same standard for Angular E2E tests, making it familiar to Angular Protractor developers.
+
+For example, if you're testing a component inside this folder structure ```src/app/login/login.component.ts``` you should put your tests in a directory like ```integration/src/login/login.integration-spec.ts```
+
+### External Dependencies
+
+**Do** mock/stub dependencies that are from outside your application, like API calls and external data sources.
+
+**Why?** Integration Test should validate the application and not it's dependencies.
+
 
 
 ## What to test?
 
-Below I have listed some examples of what you should test in Unit Tests scenarions  and Integration Tests.
+Below I have listed some examples of what you should test in Unit Tests scenarions  and Component Tests.
 
 
 Some of those examples could be fitted on one or another category, but is important to decide on where's the best place to put them and have a motive to do so. There's a flow chart on this page that may help you to decide, but as the pyramid of tests suggest, try always to cover the majority of your code using Unit Tests.
@@ -298,7 +339,7 @@ After a Service, Component or another class is created, you should assure that t
 
 It's important to ensure that all elements are being created on the template with it's correct identification. Another important thing to test is if the elements CSS classes that are related to business rules are being correctly applied.
 
-## Integration Tests
+## Component Tests
 
 ### Calls from Components or Services to Angular Services
 
@@ -306,11 +347,11 @@ After Unit Tests are done with stubbed and mocked services, you should cover if 
 
 ### Data Binding (Component x Template)
 
-In Integration Tests, you should ensure that the DOM element is binded correctly with the component's public properties that it is related. 
+In Component Tests, you should ensure that the DOM element is binded correctly with the component's public properties that it is related. 
 
 ### DOM Events (e.g. clicks, lost focus)
 
-In Integration Tests, all public functions of a component should already be covered by Unit Tests, so in Integration tests is important to test if a given event is calling his related function.
+In Component Tests, all public functions of a component should already be covered by Unit Tests, so in Component tests is important to test if a given event is calling his related function.
 
 ### Use of Directives and Sub-Components on Templates
 

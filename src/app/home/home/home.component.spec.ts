@@ -8,18 +8,16 @@ import { BehaviorSubject } from 'rxjs';
 import { User } from 'src/app/authentication/user';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 
-class MockAuthService {
-  public user = new BehaviorSubject<User>(<User>{ username: 'myusername', name: 'myname' });
-}
-
-describe('HomeComponent', () => {
+describe('HomeComponent Unit Tests', () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule],
-      providers: [{ provide: AuthenticationService, useClass: MockAuthService }],
+      providers: [{
+        provide: AuthenticationService, useValue: { user: new BehaviorSubject<User>({ username: 'myusername', name: 'myname' }) }
+      }],
       declarations: [HomeComponent],
       schemas: [NO_ERRORS_SCHEMA]
     })

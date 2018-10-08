@@ -8,7 +8,7 @@ import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import { User } from 'src/app/authentication/user';
 
-describe('HomeComponent', () => {
+describe('HomeComponent Integration Tests', () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
 
@@ -25,15 +25,24 @@ describe('HomeComponent', () => {
     fixture.detectChanges();
   });
 
-  describe('user async pipe', () => {
-    it('should retrieve user from AuthService', fakeAsync(inject([AuthenticationService], (authService) => {
+  describe('loadData', () => {
+    it('should set user from AuthService', inject([AuthenticationService], (authService) => {
+      const defaultUser = { username: 'myusername', name: 'myname' };
+      authService.user.next(defaultUser);
+      component.loadData();
+      expect(component.user).toBe(defaultUser);
+    }));
+  });
+
+  describe('UserName field', () => {
+    it('should bind User property from AuthService and display its Name', fakeAsync(inject([AuthenticationService], (authService) => {
       authService.user.next({ username: 'myusername', name: 'myname' });
       fixture.detectChanges();
       const labelUser = fixture.debugElement.query(By.css('#labelUser'));
       expect(labelUser.nativeElement.innerHTML).toBe('Hello: myname!');
     })));
 
-    it('should retrieve user from AuthService', fakeAsync(inject([AuthenticationService], (authService) => {
+    it('should show as Anonymous when user is not authenticated', fakeAsync(inject([AuthenticationService], (authService) => {
       fixture.detectChanges();
       const labelUser = fixture.debugElement.query(By.css('#labelUser'));
       expect(labelUser.nativeElement.innerHTML).toBe('Viewing as anonymous!');
