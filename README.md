@@ -26,8 +26,6 @@ If you fully understand the meaning behind the guideline and have a good reason 
 
 **Why?** gives reasons for following the previous recommendations.
 
-The **Component** word is used in this guideline as a broad term of application piece, not strictly as a UI Component.
-
 <a href="#toc">Back to top</a>
 
 ## Test Phases
