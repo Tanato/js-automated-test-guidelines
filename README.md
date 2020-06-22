@@ -248,8 +248,6 @@ Exception apply for frameworks dependencies that don't provide Stubs or public p
 
 **Consider** Extending the expect object to add custom matchers that are used multiple times
 
-**Why?**
-
 ### DOM Testing
 
 **Avoid** Testing user interactions with elements on Unit Tests. Use Component Tests to test the behaviour of the DOM elements when there's user interaction.
